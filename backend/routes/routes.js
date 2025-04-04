@@ -4,7 +4,7 @@ const adminRoutes=require("./adminRoutes")
 
 const router=express.Router()
 
-router.get("/admin",adminRoutes)
+router.use("/admin",adminRoutes)
 // router.get("/tutor",tutorRoutes)
 
 module.exports=router

@@ -1,5 +1,7 @@
 const adminModel = require("../models/adminMdl")
-const { hashPassword, comparePassword } = require("../utils/utils")
+const tutorModel = require("../models/teacherMdl")
+const centerModel = require("../models/centerMdl")
+const { hashPassword, comparePassword, resObjGen } = require("../utils/utils")
 
 const signup = async (req, res) => {
     try {
@@ -24,7 +26,7 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body
-        const admin = await adminModel.findOne({ emial }).lean()
+        const admin = await adminModel.findOne({ email }).lean()
         if (admin) {
             const isPswdMatched = await comparePassword(password, admin.password)
             if (isPswdMatched) {
@@ -54,14 +56,68 @@ const login = async (req, res) => {
     }
 }
 
+const addCenter = async (req, res) => {
+    try {
+        const data = req.data
+        data.centerimages = req.files.map(file => file.path)
+        const center = new centerModel(data)
+        await center.save()
+        res.status(201).json(resObjGen(true, "Center added successfully", center))
+    } catch (err) {
+        res.status(500).json(resObjGen(false))
+    }
+}
 
+const addTutor = async (req, res) => {
+    try {
+        const data = req.body
+        data.documentpath = req.file.path
+        const tutor = new tutorModel(data)
+        await tutor.save()
+        res.status(201).json(resObjGen(true, "Tutor added Successfully", tutor))
+    } catch (err) {
+        res.status(500).json(resObjGen(false))
+    }
+}
 
+const dashboard = async (req, res) => {
+    try {
+        const centers = await centerModel.find()
+        const tutors = await tutorModel.find()
+        res.status(200).json(centers)
+        res.json(tutors)
+    } catch (err) {
+        res.status(500).json("Failed to load centers and tutors")
+    }
+}
 
+const tutors = async (req, res) => {
+    try {
+        const tutors = await tutorModel.find()
+        res.status(200).json(tutors)
+    } catch (err) {
+        res.status(500).json("Failed to load tutors")
+    }
+}
+
+const centers = async (req, res) => {
+    try {
+        const centers = await centerModel.find()
+        res.status(200).json(centers)
+
+    } catch (err) {
+        res.status(500).json("Failed to load centers")
+    }
+}
 
 
 
 module.exports = {
     signup,
     login,
-
+    addCenter,
+    addTutor,
+    dashboard,
+    tutors,
+    centers
 }
