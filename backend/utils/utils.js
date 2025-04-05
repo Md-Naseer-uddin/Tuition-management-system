@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const bunyan = require("bunyan")
 const path = require("path")
 const multer = require("multer")
 
@@ -26,15 +25,6 @@ const comparePassword = (plainPassword, hashedPassword) => {
 //     return jwt.sign(data,)
 // }
 
-const apploggerPath = path.join(__dirname, "..", "logs", "app.log")
-
-const applogger = bunyan.createLogger(
-    {
-        name: "ecomLogger",
-        streams: [{ path: apploggerPath }]
-    }
-)
-
 const storage = multer.diskStorage({
     destination:(req,file,cb)=>{
         cb(null,"uploads/")
@@ -54,6 +44,5 @@ const upload=multer({storage})
     hashPassword,
     comparePassword,
     storage,
-    upload,
-    applogger
+    upload
 }

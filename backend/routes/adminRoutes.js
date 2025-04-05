@@ -14,5 +14,4 @@ router.get("/tutors", adminCtrl.tutors)
 router.get("/centers", adminCtrl.centers)
 
 
-
 module.exports = router
