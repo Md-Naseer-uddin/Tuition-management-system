@@ -9,6 +9,7 @@ router.post("/markStdAtten",tutorCtrl.markStdAtten)
 router.post("/markAtten",tutorCtrl.markAtten)
 router.get("/students",tutorCtrl.students)
 router.get("/studentsAttendance",tutorCtrl.studentsAttendance)
+router.delete("/deleteStudent/:id",tutorCtrl.deleteStudent)
 
 
 module.exports=router

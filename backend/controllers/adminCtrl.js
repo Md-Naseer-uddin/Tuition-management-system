@@ -110,6 +110,25 @@ const centers = async (req, res) => {
     }
 }
 
+const deleteCenter=async(req,res)=>{
+    try{
+        const id=req.params.id
+        await centerModel.deleteOne({_id:id})
+        res.status(200).json(resObjGen(true,"Center Deleted Successfully"))
+    }catch(err){
+        res.status(500).json(resObjGen(false))
+    }
+}
+
+const deleteTutor=async(req,res)=>{
+    try{
+        const id=req.params.id
+        await tutorModel.deleteOne({_id:id})
+        res.status(200).json(resObjGen(true,"Center Deleted Successfully"))
+    }catch(err){
+        res.status(500).json(resObjGen(false))
+    }
+}
 
 
 module.exports = {
@@ -119,5 +138,7 @@ module.exports = {
     addTutor,
     dashboard,
     tutors,
-    centers
+    centers,
+    deleteCenter,
+    deleteTutor
 }

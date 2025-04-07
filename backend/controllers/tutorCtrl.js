@@ -1,8 +1,9 @@
 const tutorModel = require("../models/teacherMdl")
 const studentModel = require("../models/studentMdl")
 const studentAttendanceMdl=require("../models/stdAttenMdl")
-const { comparePassword, resObjGen } = require("../utils/utils")
 const attModel=require("../models/tutorAttenMdl")
+const moment=require("moment")
+const { comparePassword, resObjGen } = require("../utils/utils")
 
 
 const login = async (req, res) => {
@@ -106,6 +107,16 @@ const markAtten=async(req,res)=>{
     }
 }
 
+const deleteStudent=async (req,res)=>{
+    try{
+        const id=req.params.id
+        await studentModel.deleteOne({_id:id})
+        res.status(200).json(resObjGen(true,"Student Deleted successfully"))
+    }catch(err){
+        res.status(500).json(resObjGen(false))
+    }
+}
+
 
 module.exports = {
     login,
@@ -113,5 +124,6 @@ module.exports = {
     students,
     markAtten,
     markStdAtten,
-    studentsAttendance
+    studentsAttendance,
+    deleteStudent
 }

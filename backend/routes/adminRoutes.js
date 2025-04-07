@@ -12,6 +12,9 @@ router.post("/addTutor", upload.single("documentpath"), adminCtrl.addTutor)
 router.get("/dashboard", adminCtrl.dashboard)
 router.get("/tutors", adminCtrl.tutors)
 router.get("/centers", adminCtrl.centers)
+router.delete("/deleteCenter/:id",adminCtrl.deleteCenter)
+router.delete("/deleteTutor/:id",adminCtrl.deleteTutor)
+
 
 
 module.exports = router
