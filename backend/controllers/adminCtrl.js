@@ -1,7 +1,7 @@
 const adminModel = require("../models/adminMdl")
 const tutorModel = require("../models/teacherMdl")
 const centerModel = require("../models/centerMdl")
-const { hashPassword, comparePassword, resObjGen } = require("../utils/utils")
+const { hashPassword, comparePassword, resObjGen,generateToken } = require("../utils/utils")
 
 const signup = async (req, res) => {
     try {
@@ -30,6 +30,7 @@ const login = async (req, res) => {
         if (admin) {
             const isPswdMatched = await comparePassword(password, admin.password)
             if (isPswdMatched) {
+                const token = generateToken({email,name:admin.name,id:admin._id,adminRole:admin.role})
                 return res.status(200).json({
                     message: "Admin Loggedin Successfully",
                     success: true,
@@ -37,6 +38,7 @@ const login = async (req, res) => {
                         name: admin.name,
                         email: admin.email,
                         _id: admin._id,
+                        token
                     }
                 })
             } else {
@@ -52,18 +54,20 @@ const login = async (req, res) => {
         })
     }
     catch (err) {
+        console.error("Error in login:", err);
         res.status(500).json({ message: "Internal server error", success: false })
     }
 }
 
 const addCenter = async (req, res) => {
     try {
-        const data = req.data
+        const data = req.body
         data.centerimages = req.files.map(file => file.path)
         const center = new centerModel(data)
         await center.save()
         res.status(201).json(resObjGen(true, "Center added successfully", center))
     } catch (err) {
+        console.error("Error saving center:", err);
         res.status(500).json(resObjGen(false))
     }
 }
@@ -76,6 +80,7 @@ const addTutor = async (req, res) => {
         await tutor.save()
         res.status(201).json(resObjGen(true, "Tutor added Successfully", tutor))
     } catch (err) {
+        console.error("Error saving tutor:", err);
         res.status(500).json(resObjGen(false))
     }
 }
@@ -84,9 +89,9 @@ const dashboard = async (req, res) => {
     try {
         const centers = await centerModel.find()
         const tutors = await tutorModel.find()
-        res.status(200).json(centers)
-        res.json(tutors)
+        res.status(200).json({centers,tutors})
     } catch (err) {
+        console.error("Error in dashboard:", err);
         res.status(500).json("Failed to load centers and tutors")
     }
 }
@@ -96,6 +101,7 @@ const tutors = async (req, res) => {
         const tutors = await tutorModel.find()
         res.status(200).json(tutors)
     } catch (err) {
+        console.error("Error in tutors:", err);
         res.status(500).json("Failed to load tutors")
     }
 }
@@ -106,26 +112,29 @@ const centers = async (req, res) => {
         res.status(200).json(centers)
 
     } catch (err) {
+        console.error("Error in centers:", err);
         res.status(500).json("Failed to load centers")
     }
 }
 
-const deleteCenter=async(req,res)=>{
-    try{
-        const id=req.params.id
-        await centerModel.deleteOne({_id:id})
-        res.status(200).json(resObjGen(true,"Center Deleted Successfully"))
-    }catch(err){
+const deleteCenter = async (req, res) => {
+    try {
+        const id = req.params.id
+        await centerModel.deleteOne({ _id: id })
+        res.status(200).json(resObjGen(true, "Center Deleted Successfully"))
+    } catch (err) {
+        console.error("Error in deleting center:", err);
         res.status(500).json(resObjGen(false))
     }
 }
 
-const deleteTutor=async(req,res)=>{
-    try{
-        const id=req.params.id
-        await tutorModel.deleteOne({_id:id})
-        res.status(200).json(resObjGen(true,"Center Deleted Successfully"))
-    }catch(err){
+const deleteTutor = async (req, res) => {
+    try {
+        const id = req.params.id
+        await tutorModel.deleteOne({ _id: id })
+        res.status(200).json(resObjGen(true, "Center Deleted Successfully"))
+    } catch (err) {
+        console.error("Error in deleting tutor:", err);
         res.status(500).json(resObjGen(false))
     }
 }

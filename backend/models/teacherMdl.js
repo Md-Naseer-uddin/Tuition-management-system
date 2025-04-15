@@ -11,7 +11,8 @@ const tutorSchema = new schema(
         phone: { type: Number, require: true },
         specialization: { type: String, required: true },
         experience: { type: Number, required: true },
-        documentPath: { type: String, required: true }
+        center : {type : mongoose.Schema.Types.ObjectId , required : true, ref : "center"},
+        documentpath: { type: String, required: true }
     },
     { timestamps: true }
 )

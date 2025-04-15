@@ -3,6 +3,7 @@ const mongoose=require("mongoose")
 const path=require("path")
 const fs=require("fs")
 const routes=require("./routes/routes")
+require("dotenv").config()
 
 const app=express()
 
@@ -18,10 +19,9 @@ if(!fs.existsSync(uploadDir)){
 
 
 app.use("/api/v1/", routes);
+console.log(process.env.DB_URL)
 
-
-mongoose.connect("mongodb://127.0.0.1:27017/cgc")
+mongoose
+.connect(process.env.DB_URL)
 .then(()=>console.log("DB is connected to server!"))
 .catch((err)=>console.log(err))
-
-
